@@ -26,7 +26,7 @@ SYMPTOM_KNOWLEDGE_BASE = {
     "headache": ["Migraine", "Tension Headache", "Sinus Infection", "Cluster Headache", "Meningitis", "Hypertension"],
     "stomach pain": ["Gastritis", "Food Poisoning", "Appendicitis", "Acid Reflux", "IBS", "Gallstones", "Peptic Ulcer"],
     "diarrhea": ["Food Poisoning", "IBS", "Cholera", "Gastroenteritis", "Crohn’s Disease"],
-    "vomiting": ["Food Poisoning", "Gastroenteritis", "Pregnancy (Morning Sickness)", "Migraine", "Motion Sickness"],
+    "vomiting": ["Food Poisoning", "Gastroenteritis", "Migraine", "Motion Sickness"],
     "chest pain": ["Heart Attack", "Angina", "GERD (Acid Reflux)", "Pulmonary Embolism", "Pneumonia", "Panic Attack"],
     "shortness of breath": ["Asthma", "COPD (Chronic Obstructive Pulmonary Disease)", "Heart Failure", "Pneumonia", "COVID-19", "Anemia"],
     "fatigue": ["Anemia", "Hypothyroidism", "Chronic Fatigue Syndrome", "Diabetes", "Depression"],
