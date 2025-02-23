@@ -75,8 +75,7 @@ SYMPTOM_KNOWLEDGE_BASE = {
     "high blood pressure": ["Hypertension", "Kidney Disease", "Hyperthyroidism", "Sleep Apnea"],
     "difficulty sleeping": ["Insomnia", "Anxiety", "Depression", "Sleep Apnea"],
     "dry skin": ["Eczema", "Hypothyroidism", "Dehydration", "Vitamin A Deficiency"],
-    "pain in penis": ["Erectile dysfunction", "Prostate cancer","Phimosis"]
-    
+    "pain in penis": ["Erectile dysfunction", "Prostate cancer","Phimosis"]   
 }
 
 def bot_response(user_input):
