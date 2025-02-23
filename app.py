@@ -1,12 +1,8 @@
 import streamlit as st
 from transformers import pipeline
 import re
-#import features  # Importing the features page
-
-# Set page config
+#import features  
 st.set_page_config(page_title="Doc.AI", layout="wide")
-
-# Load Hugging Face Medical Model (BioGPT)
 @st.cache_resource
 def load_model():
     try:
@@ -18,7 +14,7 @@ def load_model():
 
 model = load_model()
 
-# Symptom Knowledge Base
+
 SYMPTOM_KNOWLEDGE_BASE = {
     "cold": ["Common Cold", "Influenza", "Allergic Rhinitis", "Sinusitis"],
     "fever": ["Viral Fever", "Flu", "Dengue", "Malaria", "Typhoid", "COVID-19", "Heat Stroke"],
@@ -80,7 +76,7 @@ SYMPTOM_KNOWLEDGE_BASE = {
     "pain in penis": ["Erectile dysfunction", "Prostate cancer","Phimosis"]
 }
 
-# Function to generate bot responses
+
 def bot_response(user_input):
     if model is None:
         return "Error: Model failed to load. Please try again later."
@@ -150,28 +146,25 @@ def bot_response(user_input):
 
     st.markdown("<div class='title'>🩺 Doc.AI - Your Medical Assistant</div>", unsafe_allow_html=True)
 
-# Initialize session state for page navigation
+
 if "page" not in st.session_state:
     st.session_state.page = "chatbot"
 
-# Function for chatbot page
 def chatbot_page():
     st.markdown("<div class='title'>🩺 Doc.AI - Your Medical Assistant</div>", unsafe_allow_html=True)
 
-    # Initialize session state variables
+ 
     if "chat_history" not in st.session_state:
         st.session_state.chat_history = []
     if "submitted_text" not in st.session_state:
         st.session_state.submitted_text = ""
 
-    # Function to update submitted text when Enter is pressed
     def submit_text():
         st.session_state.submitted_text = st.session_state.user_input
 
     # User input field with Enter key submission
     user_input = st.text_input("Type Hello to start chatting with Doc.AI:", key="user_input", on_change=submit_text)
 
-    # Check if Enter was pressed or "Send" button was clicked
     if (st.session_state.submitted_text or st.button("Send")) and st.session_state.submitted_text:
         with st.spinner("Thinking... 🤖"):
             response = bot_response(st.session_state.submitted_text)
@@ -179,10 +172,9 @@ def chatbot_page():
         st.session_state.chat_history.append(("You", st.session_state.submitted_text))
         st.session_state.chat_history.append(("Doc.AI", response))
 
-        # Clear input field safely without modifying `user_input`
         st.session_state.submitted_text = ""
 
-    # Display chat history
+ 
     st.markdown("<div class='chat-container chat-box'>", unsafe_allow_html=True)
     for sender, message in st.session_state.chat_history:
         if sender == "You":
