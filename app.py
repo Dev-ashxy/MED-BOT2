@@ -1,6 +1,7 @@
 import streamlit as st
 from transformers import pipeline
 import re
+#import features  # Importing the features page
 
 # Set page config
 st.set_page_config(page_title="Doc.AI", layout="wide")
@@ -17,13 +18,14 @@ def load_model():
 
 model = load_model()
 
+# Symptom Knowledge Base
 SYMPTOM_KNOWLEDGE_BASE = {
     "cold": ["Common Cold", "Influenza", "Allergic Rhinitis", "Sinusitis"],
     "fever": ["Viral Fever", "Flu", "Dengue", "Malaria", "Typhoid", "COVID-19", "Heat Stroke"],
     "cough": ["Bronchitis", "Pneumonia", "COVID-19", "Tuberculosis", "Asthma", "Whooping Cough"],
     "headache": ["Migraine", "Tension Headache", "Sinus Infection", "Cluster Headache", "Meningitis", "Hypertension"],
-    "stomach pain": ["Gastritis", "Food Poisoning", "Appendicitis", "Acid Reflux", "Irritable Bowel Syndrome (IBS)", "Gallstones", "Peptic Ulcer"],
-    "diarrhea": ["Food Poisoning", "Irritable Bowel Syndrome (IBS)", "Cholera", "Gastroenteritis", "Crohn’s Disease"],
+    "stomach pain": ["Gastritis", "Food Poisoning", "Appendicitis", "Acid Reflux", "IBS", "Gallstones", "Peptic Ulcer"],
+    "diarrhea": ["Food Poisoning", "IBS", "Cholera", "Gastroenteritis", "Crohn’s Disease"],
     "vomiting": ["Food Poisoning", "Gastroenteritis", "Pregnancy (Morning Sickness)", "Migraine", "Motion Sickness"],
     "chest pain": ["Heart Attack", "Angina", "GERD (Acid Reflux)", "Pulmonary Embolism", "Pneumonia", "Panic Attack"],
     "shortness of breath": ["Asthma", "COPD (Chronic Obstructive Pulmonary Disease)", "Heart Failure", "Pneumonia", "COVID-19", "Anemia"],
@@ -75,9 +77,10 @@ SYMPTOM_KNOWLEDGE_BASE = {
     "high blood pressure": ["Hypertension", "Kidney Disease", "Hyperthyroidism", "Sleep Apnea"],
     "difficulty sleeping": ["Insomnia", "Anxiety", "Depression", "Sleep Apnea"],
     "dry skin": ["Eczema", "Hypothyroidism", "Dehydration", "Vitamin A Deficiency"],
-    "pain in penis": ["Erectile dysfunction", "Prostate cancer","Phimosis"]   
+    "pain in penis": ["Erectile dysfunction", "Prostate cancer","Phimosis"]
 }
 
+# Function to generate bot responses
 def bot_response(user_input):
     if model is None:
         return "Error: Model failed to load. Please try again later."
@@ -97,14 +100,11 @@ def bot_response(user_input):
         cleaned_text = re.sub(r"[\[\]{}]", "", cleaned_text)  
         cleaned_text = cleaned_text.replace("▃", "").strip()  
 
-        if "diabetes" in cleaned_text.lower() and "cold" not in cleaned_text.lower():
-            return "That doesn't seem right. If you have a cold, you may have Influenza or a Common Cold."
-
         return cleaned_text
     except Exception as e:
         return f"Sorry, I couldn't process your request. Error: {e}"
-
-st.markdown("""
+    
+    st.markdown("""
     <style>
         .chat-container {
             background-color: #e5f7e9;
@@ -148,40 +148,59 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-st.markdown("<div class='title'>🩺 Doc.AI - Your Medical Assistant</div>", unsafe_allow_html=True)
+    st.markdown("<div class='title'>🩺 Doc.AI - Your Medical Assistant</div>", unsafe_allow_html=True)
 
-# Initialize session state variables
-if "chat_history" not in st.session_state:
-    st.session_state.chat_history = []
-if "submitted_text" not in st.session_state:
-    st.session_state.submitted_text = ""
+# Initialize session state for page navigation
+if "page" not in st.session_state:
+    st.session_state.page = "chatbot"
 
-# Function to update submitted text when Enter is pressed
-def submit_text():
-    st.session_state.submitted_text = st.session_state.user_input
+# Function for chatbot page
+def chatbot_page():
+    st.markdown("<div class='title'>🩺 Doc.AI - Your Medical Assistant</div>", unsafe_allow_html=True)
 
-# User input field with Enter key submission
-user_input = st.text_input("Type your message:", key="user_input", on_change=submit_text)
+    # Initialize session state variables
+    if "chat_history" not in st.session_state:
+        st.session_state.chat_history = []
+    if "submitted_text" not in st.session_state:
+        st.session_state.submitted_text = ""
 
-# Check if Enter was pressed or "Send" button was clicked
-if (st.session_state.submitted_text or st.button("Send")) and st.session_state.submitted_text:
-    with st.spinner("Thinking... 🤖"):
-        response = bot_response(st.session_state.submitted_text)
+    # Function to update submitted text when Enter is pressed
+    def submit_text():
+        st.session_state.submitted_text = st.session_state.user_input
 
-    st.session_state.chat_history.append(("You", st.session_state.submitted_text))
-    st.session_state.chat_history.append(("Doc.AI", response))
+    # User input field with Enter key submission
+    user_input = st.text_input("Type Hello to start chatting with Doc.AI:", key="user_input", on_change=submit_text)
 
-    # Clear input field safely without modifying `user_input`
-    st.session_state.submitted_text = ""
+    # Check if Enter was pressed or "Send" button was clicked
+    if (st.session_state.submitted_text or st.button("Send")) and st.session_state.submitted_text:
+        with st.spinner("Thinking... 🤖"):
+            response = bot_response(st.session_state.submitted_text)
 
-# Display chat history
-st.markdown("<div class='chat-container chat-box'>", unsafe_allow_html=True)
-for sender, message in st.session_state.chat_history:
-    if sender == "You":
-        st.markdown(f"<div class='user-message'>{message}</div>", unsafe_allow_html=True)
-    else:
-        st.markdown(f"<div class='bot-message'>{message}</div>", unsafe_allow_html=True)
-st.markdown("</div>", unsafe_allow_html=True)
+        st.session_state.chat_history.append(("You", st.session_state.submitted_text))
+        st.session_state.chat_history.append(("Doc.AI", response))
 
-st.write("---")
-st.write("🤖 Powered by Doc.AI")
+        # Clear input field safely without modifying `user_input`
+        st.session_state.submitted_text = ""
+
+    # Display chat history
+    st.markdown("<div class='chat-container chat-box'>", unsafe_allow_html=True)
+    for sender, message in st.session_state.chat_history:
+        if sender == "You":
+            st.markdown(f"<div class='user-message'>{message}</div>", unsafe_allow_html=True)
+        else:
+            st.markdown(f"<div class='bot-message'>{message}</div>", unsafe_allow_html=True)
+    st.markdown("</div>", unsafe_allow_html=True)
+
+    # # Next Button to navigate to features page
+    # if st.button(""):
+    #     st.session_state.page = "features"
+    #     st.rerun()
+
+    st.write("---")
+    st.write("🤖 Powered by Doc.AI")
+
+# Page routing
+if st.session_state.page == "chatbot":
+    chatbot_page()
+elif st.session_state.page == "features":
+    features.show_features_page()
