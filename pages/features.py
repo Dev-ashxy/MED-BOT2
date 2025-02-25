@@ -50,7 +50,7 @@ def fetch_nearby_clinics(lat, lon):
 
 st.title("🏥 Nearby Medical Clinics")
 
-city = st.text_input("📍 Enter Your City:", "Kolkata")
+city = st.text_input("📍 Enter Your City:", "Delhi")
 
 latitude, longitude = get_location(city)
 
