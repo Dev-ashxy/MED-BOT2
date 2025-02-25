@@ -196,3 +196,6 @@ if st.session_state.page == "chatbot":
     chatbot_page()
 elif st.session_state.page == "features":
     features.show_features_page()
+
+elif st.session_state.page == "doctors":
+    features.show_doctors_page()
