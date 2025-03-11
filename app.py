@@ -161,6 +161,8 @@ def chatbot_page():
 
     def submit_text():
         st.session_state.submitted_text = st.session_state.user_input
+        st.session_state.user_input = ""  # Clear input field after submission
+
 
     # User input field with Enter key submission
     user_input = st.text_input("Type Hello to start chatting with Doc.AI:", key="user_input", on_change=submit_text)
